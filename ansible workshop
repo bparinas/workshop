@@ -26,6 +26,7 @@ config.vm.define "mgmt" do |mgmt_config|
      vb.memory = 1024
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
    end
+   mgmt_config.vm.provision "shell", path: "bootstrap-lb-web.sh"
  end
 
  #create web servers
@@ -39,6 +40,7 @@ config.vm.define "mgmt" do |mgmt_config|
      vb.memory = 1024
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
    end
+   mgmt_config.vm.provision "shell", path: "bootstrap-lb-web.sh"
  end
 end
 end
@@ -67,3 +69,14 @@ sudo cat >> /etc/hosts <<EOL
 192.168.56.11 web1
 192.168.56.12 web2
 EOL
+
+bootstrap-lb-web.sh:
+====================
+#configure resolv.conf file
+sudo cat >> /etc/resolv.conf <<EOL
+nameserver 8.8.8.8
+EOL
+
+#install python
+sudo apt-get update
+sudo apt-get --yes install ansible
